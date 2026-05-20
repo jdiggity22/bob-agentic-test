@@ -1,6 +1,6 @@
-# Claude Agent with Langflow
+# Claude Agent with LangChain
 
-A simple conversational agent that connects to Claude AI using Langflow/LangChain.
+A simple conversational agent that connects to Claude AI using LangChain and the Anthropic API.
 
 ## Features
 
@@ -21,7 +21,7 @@ A simple conversational agent that connects to Claude AI using Langflow/LangChai
 
 2. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
    ```
 
 3. **Set up your API key**
@@ -43,7 +43,7 @@ A simple conversational agent that connects to Claude AI using Langflow/LangChai
 Simply run the main script:
 
 ```bash
-python claude_agent.py
+python3 claude_agent.py
 ```
 
 ### Commands
@@ -58,7 +58,7 @@ Once the agent is running, you can use these commands:
 
 ```
 ============================================================
-Claude Agent - Powered by Langflow
+Claude Agent - Powered by LangChain
 ============================================================
 
 Commands:
@@ -156,10 +156,10 @@ If you hit rate limits, consider:
 
 ## Dependencies
 
-- **langflow**: Framework for building LLM applications
 - **anthropic**: Official Anthropic Python SDK
 - **langchain**: LLM application framework
 - **langchain-anthropic**: LangChain integration for Anthropic models
+- **langchain-core**: Core LangChain functionality
 - **python-dotenv**: Environment variable management
 
 ## License
@@ -174,7 +174,7 @@ Feel free to submit issues or pull requests to improve this agent!
 
 - [Anthropic Documentation](https://docs.anthropic.com/)
 - [LangChain Documentation](https://python.langchain.com/)
-- [Langflow Documentation](https://docs.langflow.org/)
+- [LangChain Anthropic Integration](https://python.langchain.com/docs/integrations/chat/anthropic)
 
 ---
 

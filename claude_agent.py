@@ -1,21 +1,19 @@
 """
-Simple Langflow Agent that connects to Claude API
-This script demonstrates how to create a basic conversational agent using Langflow and Claude.
+Simple LangChain Agent that connects to Claude API
+This script demonstrates how to create a basic conversational agent using LangChain and Claude.
 """
 
 import os
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
-from langchain.schema import HumanMessage, SystemMessage
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # Load environment variables
 load_dotenv()
 
 class ClaudeAgent:
-    """A simple agent that uses Claude via Langflow/LangChain"""
+    """A simple agent that uses Claude via LangChain"""
     
     def __init__(self, model_name="claude-3-5-sonnet-20241022", temperature=0.7):
         """
@@ -38,18 +36,8 @@ class ClaudeAgent:
             max_tokens=1024
         )
         
-        # Set up conversation memory
-        self.memory = ConversationBufferMemory(
-            return_messages=True,
-            memory_key="history"
-        )
-        
-        # Create conversation chain
-        self.conversation = ConversationChain(
-            llm=self.llm,
-            memory=self.memory,
-            verbose=True
-        )
+        # Store conversation history
+        self.conversation_history = []
         
         print(f"✓ Claude Agent initialized with model: {model_name}")
     
@@ -64,21 +52,29 @@ class ClaudeAgent:
             Claude's response
         """
         try:
-            response = self.conversation.predict(input=message)
-            return response
+            # Add user message to history
+            self.conversation_history.append(HumanMessage(content=message))
+            
+            # Get response from Claude
+            response = self.llm.invoke(self.conversation_history)
+            
+            # Add AI response to history
+            self.conversation_history.append(AIMessage(content=response.content))
+            
+            return response.content
         except Exception as e:
             return f"Error: {str(e)}"
     
     def reset_conversation(self):
         """Clear the conversation history"""
-        self.memory.clear()
+        self.conversation_history = []
         print("✓ Conversation history cleared")
 
 
 def main():
     """Main function to run the interactive agent"""
     print("=" * 60)
-    print("Claude Agent - Powered by Langflow")
+    print("Claude Agent - Powered by LangChain")
     print("=" * 60)
     print("\nCommands:")
     print("  - Type your message to chat with Claude")
@@ -118,7 +114,7 @@ def main():
         print(f"\n❌ Error: {str(e)}")
         print("\nMake sure you have:")
         print("1. Created a .env file with your ANTHROPIC_API_KEY")
-        print("2. Installed all requirements: pip install -r requirements.txt")
+        print("2. Installed all requirements: pip3 install -r requirements.txt")
 
 
 if __name__ == "__main__":
