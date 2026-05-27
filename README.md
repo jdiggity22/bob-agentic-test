@@ -1,40 +1,73 @@
-# Claude Agent with LangChain
+# Ollama Agent with LangChain
 
-A simple conversational agent that connects to Claude AI using LangChain and the Anthropic API.
+A simple conversational agent that connects to local Ollama using LangChain.
 
 ## Features
 
-- 🤖 Interactive chat with Claude AI
+- 🤖 Interactive chat with local Ollama models
 - 💬 Conversation memory to maintain context
 - 🔄 Easy conversation reset
 - 🎯 Simple and clean implementation
-- 🔐 Secure API key management with environment variables
+- 🔐 Optional configuration with environment variables
+- 🚀 No API keys required - runs completely locally!
 
 ## Prerequisites
 
 - Python 3.8 or higher
-- Anthropic API key (get one at [console.anthropic.com](https://console.anthropic.com/))
+- Ollama installed and running locally ([ollama.com](https://ollama.com))
 
 ## Installation
 
-1. **Clone or navigate to this repository**
+### 1. Install Ollama
 
-2. **Install dependencies**
-   ```bash
-   pip3 install -r requirements.txt
-   ```
+First, install Ollama on your system:
 
-3. **Set up your API key**
-   
-   Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and add your Anthropic API key:
-   ```
-   ANTHROPIC_API_KEY=your_actual_api_key_here
-   ```
+**macOS/Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+**Windows:**
+Download from [ollama.com/download](https://ollama.com/download)
+
+### 2. Pull a Model
+
+Pull a model to use (e.g., llama3.2):
+```bash
+ollama pull llama3.2
+```
+
+Other popular models:
+- `ollama pull mistral` - Mistral 7B
+- `ollama pull codellama` - Code Llama for programming
+- `ollama pull phi3` - Microsoft Phi-3
+- `ollama pull gemma2` - Google Gemma 2
+
+### 3. Start Ollama Server
+
+Start the Ollama server (if not already running):
+```bash
+ollama serve
+```
+
+### 4. Install Python Dependencies
+
+```bash
+pip3 install -r requirements.txt
+```
+
+### 5. (Optional) Configure Environment Variables
+
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` to customize (optional - defaults will be used):
+```
+OLLAMA_MODEL=llama3.2
+OLLAMA_BASE_URL=http://localhost:11434
+```
 
 ## Usage
 
@@ -43,7 +76,7 @@ A simple conversational agent that connects to Claude AI using LangChain and the
 Simply run the main script:
 
 ```bash
-python3 claude_agent.py
+python3 ollama_agent.py
 ```
 
 ### Commands
@@ -58,21 +91,22 @@ Once the agent is running, you can use these commands:
 
 ```
 ============================================================
-Claude Agent - Powered by LangChain
+Ollama Agent - Powered by LangChain
 ============================================================
 
 Commands:
-  - Type your message to chat with Claude
+  - Type your message to chat with Ollama
   - Type 'reset' to clear conversation history
   - Type 'quit' or 'exit' to end the session
 ============================================================
-✓ Claude Agent initialized with model: claude-3-5-sonnet-20241022
+✓ Ollama Agent initialized with model: llama3.2
+✓ Connecting to Ollama at: http://localhost:11434
 
 ------------------------------------------------------------
 
 You: Hello! Can you help me understand what you can do?
 
-Claude: Hello! I'm Claude, an AI assistant. I can help you with a wide variety of tasks...
+Ollama: Hello! I'm an AI assistant running locally on your machine...
 
 ------------------------------------------------------------
 
@@ -87,18 +121,19 @@ Goodbye! 👋
 
 ## Using the Agent in Your Own Code
 
-You can also import and use the `ClaudeAgent` class in your own Python scripts:
+You can also import and use the `OllamaAgent` class in your own Python scripts:
 
 ```python
-from claude_agent import ClaudeAgent
+from ollama_agent import OllamaAgent
 
 # Initialize the agent
-agent = ClaudeAgent(
-    model_name="claude-3-5-sonnet-20241022",
-    temperature=0.7
+agent = OllamaAgent(
+    model_name="llama3.2",
+    temperature=0.7,
+    base_url="http://localhost:11434"
 )
 
-# Chat with Claude
+# Chat with Ollama
 response = agent.chat("What is the capital of France?")
 print(response)
 
@@ -110,57 +145,90 @@ agent.reset_conversation()
 
 You can customize the agent by modifying these parameters when initializing:
 
-- **model_name**: Choose different Claude models
-  - `claude-3-5-sonnet-20241022` (default, balanced)
-  - `claude-3-opus-20240229` (most capable)
-  - `claude-3-haiku-20240307` (fastest)
+- **model_name**: Choose different Ollama models
+  - `llama3.2` (default, balanced)
+  - `mistral` (fast and capable)
+  - `codellama` (optimized for code)
+  - `phi3` (efficient, smaller model)
+  - `gemma2` (Google's model)
 
 - **temperature**: Control response randomness (0.0 to 1.0)
   - Lower values (0.0-0.3): More focused and deterministic
   - Medium values (0.4-0.7): Balanced (default: 0.7)
   - Higher values (0.8-1.0): More creative and varied
 
+- **base_url**: Ollama server URL (default: `http://localhost:11434`)
+
 ## Project Structure
 
 ```
 .
-├── claude_agent.py      # Main agent implementation
+├── ollama_agent.py      # Main agent implementation
+├── claude_agent.py      # Original Claude implementation (kept for reference)
 ├── requirements.txt     # Python dependencies
 ├── .env.example        # Example environment file
-├── .env               # Your actual API key (not in git)
+├── .env               # Your configuration (optional)
 └── README.md          # This file
 ```
 
 ## Troubleshooting
 
+### Ollama Not Running
+
+If you get connection errors:
+```bash
+# Start Ollama server
+ollama serve
+```
+
+### Model Not Found
+
+If you get "model not found" errors:
+```bash
+# Pull the model first
+ollama pull llama3.2
+```
+
 ### Import Errors
 
 If you see import errors, make sure you've installed all dependencies:
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-### API Key Issues
+### Slow Responses
 
-If you get authentication errors:
-1. Verify your API key is correct in the `.env` file
-2. Make sure the `.env` file is in the same directory as `claude_agent.py`
-3. Check that your API key is active at [console.anthropic.com](https://console.anthropic.com/)
+If responses are slow:
+- Use a smaller model (e.g., `phi3` instead of `llama3.2`)
+- Ensure Ollama is using GPU acceleration if available
+- Check system resources (RAM, CPU usage)
 
-### Rate Limits
+## Available Models
 
-If you hit rate limits, consider:
-- Adding delays between requests
-- Using a lower-tier model (e.g., Haiku instead of Sonnet)
-- Upgrading your Anthropic API plan
+List all available models on your system:
+```bash
+ollama list
+```
+
+Search for more models:
+```bash
+ollama search <model-name>
+```
 
 ## Dependencies
 
-- **anthropic**: Official Anthropic Python SDK
 - **langchain**: LLM application framework
-- **langchain-anthropic**: LangChain integration for Anthropic models
+- **langchain-ollama**: LangChain integration for Ollama
 - **langchain-core**: Core LangChain functionality
 - **python-dotenv**: Environment variable management
+
+## Advantages of Using Ollama
+
+✅ **Privacy**: All data stays on your machine  
+✅ **No API Costs**: Completely free to use  
+✅ **Offline Capable**: Works without internet  
+✅ **Fast**: No network latency  
+✅ **Customizable**: Use any Ollama-compatible model  
 
 ## License
 
@@ -172,15 +240,16 @@ Feel free to submit issues or pull requests to improve this agent!
 
 ## Resources
 
-- [Anthropic Documentation](https://docs.anthropic.com/)
+- [Ollama Documentation](https://github.com/ollama/ollama)
+- [Ollama Models Library](https://ollama.com/library)
 - [LangChain Documentation](https://python.langchain.com/)
-- [LangChain Anthropic Integration](https://python.langchain.com/docs/integrations/chat/anthropic)
+- [LangChain Ollama Integration](https://python.langchain.com/docs/integrations/chat/ollama)
 
 ---
 
 **Note**: This is a simple example implementation. For production use, consider adding:
 - Error handling and retry logic
 - Logging
-- Token usage tracking
 - Streaming responses
 - More sophisticated memory management
+- Model performance monitoring
